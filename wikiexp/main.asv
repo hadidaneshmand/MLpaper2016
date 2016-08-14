@@ -1,0 +1,14 @@
+
+casnum = 200;
+win = 25;
+chart = sprintf('cas_%d',casnum);
+display(chart);
+cas = load('cas');
+cas = cas.cas;
+A = load('A');
+A = A.A;
+cas.seq = cas.seq(1:casnum);
+t1 = cputime;
+A_hat = cas.learn(1,cas.m); 
+t2 = cputime;
+evp(A,A_hat,'ep',chart);

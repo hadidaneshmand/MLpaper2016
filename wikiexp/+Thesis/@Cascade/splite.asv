@@ -1,0 +1,19 @@
+
+function [given predict] = splite( cas ,samnum)
+%SPLITE sequence to given and predict set for testing
+ seq = cas.seq;
+ init = seq(1,1); 
+ given = {};
+ predict = {};
+ i =1 ;
+ while(init<size(seq,1) && i<samnum)
+     gind = find(seq(:,1)-init>cas.T1 * seq(:,1)-init<cas.T2);
+     if(size(gind,1) 
+     pind = find(seq(:,1)-init>cas.T2+cas.T1 & seq(:,1) -init<2*cas.T2);
+     given = vertcat(given,{seq(gind,:)});
+     predict = vertcat(
+     init = seq(gind(1),1);
+     i = i+1;
+ end
+end
+
