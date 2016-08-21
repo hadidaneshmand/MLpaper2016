@@ -1,0 +1,17 @@
+classdef Dist
+    
+   methods (Abstract)
+        out = getname(inD);
+        out = getScof(inD,ti,tj); 
+        out = getHcof(inD,ti,tj);
+        out = genrand(inD,alpha);
+        out = getpdf(inD,X,alpha);
+        out = getcdf(inD,X,alpha);
+    end
+   methods
+       function out = Survial(inD,X,alpha)
+          out = 1- inD.getcdf(inD,X,alpha 
+       end
+   end
+end
+

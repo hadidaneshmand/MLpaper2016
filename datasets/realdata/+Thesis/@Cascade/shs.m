@@ -1,0 +1,44 @@
+function [Si,Hi] = shs(cas,sno)
+%This function compute initial coffecient based on distribution for special
+%node sno sequence of cascade alwayes sorted by time of infection in
+%increasing order;
+d1 = cas.m;d2 = cas.t;
+Si = []; 
+Hi = {};
+n = size(cas.seq,1);
+for i=1:n
+   
+   seq = cas.seq{i};
+   [r c v] = find(seq(:,2) == sno);
+   exits = size(r,1);
+   if(exits)
+       ti = seq(r,1);ki = seq(r,3);
+       jind = find(ti - seq(:,1)>0);
+       if(size(jind,1) ~=0)
+        tj = seq(jind,1);js = seq(jind,2); kjs = seq(jind,3); 
+        omat = ones(size(tj)); 
+        for k=1:cas.t
+            kind = (kjs == k)+omat;
+            sind = sub2ind([d1 d2],js,kind);%Todo with size
+            scof = cas.dist.getScof(ti,tj);
+            Si = [Si;sind,scof];
+        end
+        kind = (kjs == ki) + omat;
+        hind = sub2ind([d1 d2],js,kind);
+        hcof = cas.dist.getHcof(ti,tj);
+        Hi = vertcat(Hi,{[hind,hcof]});
+       end
+   else
+       tm = cas.w;
+       tj = seq(:,1);js = seq(:,2);kjs = seq(:,3); 
+       omat = ones(size(tj));
+       for k=1:cas.t
+        kind = (kjs == k)+omat;
+        sind = sub2ind([d1 d2],js,kind);%Todo with size
+        scof = cas.dist.getScof(tm,tj);
+        Si = [Si;sind,scof];
+       end
+   end
+end
+end
+

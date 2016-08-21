@@ -1,0 +1,60 @@
+classdef Cascade
+    %This calss is a representation for cascades in companies
+    
+    properties
+       %first col is time, second companynum, 3th cascade type.
+       seq;
+       %is same as seq but it used for testing 
+       tseq;
+       %cascad matrix rows indicates to cascade of each node through
+       %time
+       casmat;
+       %If debug be true some plots and prints can help to debug
+       debug;
+       %lower bound of cascad intrval
+       T1;
+       %upper bound of cascad interval 
+       T2;  
+       %number of companies
+       m;
+       %number of types
+       t;
+       %distribution
+       dist;
+    end
+    
+    methods
+        function out = Cascade()
+            out.debug = false;
+            out.T1 = 1; 
+            out.T2 = 14;
+            out.dist = Thesis.Distribution.EXPD();
+        end
+        %Cascade sequence sorte by time of cascades.
+        function outcas = mat2seq(incas)
+           outcas = incas;  
+           mat = incas.casmat;
+           [r,c,v] = find(mat);
+           outcas.seq = [c,r,v];
+           outcas.seq = sortrows(outcas.seq,1);
+        end
+        
+        function outcas = setcasmat(incas,mat)
+           outcas = incas;
+           outcas.m = size(mat,1); 
+           outcas.t = size(unique(mat(:)),1)-1;
+           outcas.casmat = mat;
+           outcas = outcas.mat2seq();
+        end
+        
+        %Spliting seqence to test and learning set.
+        function ocas = splite2test(icas,testprecent)
+            ocas = icas;
+            ss = size(icas.seq,1); 
+            ls = floor(ss*testprecent); 
+            seq = ocas.seq;
+        end
+        
+    end
+end
+

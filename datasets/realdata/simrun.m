@@ -1,0 +1,11 @@
+fname = 'out.slashdot'; 
+oname = 'slash_big';
+out = load(fname);
+n = max(max(out(:,1)),max(out(:,2))); 
+net = sparse(out(:,1),out(:,2),out(:,3),n,n);
+nodenum = size(net,1);
+m = rndwalk_nobalance(net,4000,5000);
+posn = size(find(m>0),1);
+negn = size(find(m<0),1);
+win = 15;
+save(oname,'m');

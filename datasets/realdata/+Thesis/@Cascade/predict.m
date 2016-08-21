@@ -1,0 +1,40 @@
+function [ pred ] = predict(cas,net, giv )
+    tjs = giv(:,1);js = giv(:,2);kjs = giv(:,3);
+    sij = size(giv,1);
+    S = 1; 
+    H = 0;
+    st = tjs(end) + 1; 
+    for j=1:sij
+       delta = st - tjs(j); 
+       omat = ones(size(net(js(j),:,kjs(j),:)));
+       omat = reshape(omat,[cas.m,cas.t]);
+       X = delta*omat;
+       alpha = net(js(j),:,kjs(j),:);
+       alpha = reshape(alpha,[cas.m,cas.t]);
+       sj = cas.dist.survival(X,alpha);
+       S = S.*sj; 
+       Hj = cas.dist.hazard(X,alpha);
+       H = H + Hj; 
+    end
+    P = H.*S;
+    P(js,:) = 0;
+    if(cas.t ~= 2)%this should be complete!! TODO
+       display('predict method is designed for only two type cascade'); 
+    end
+    mm(:,1) = Inf*ones(cas.m,1); 
+    mm(:,2) = -Inf*ones(cas.m,1);
+    mmk = zeros(cas.m,2);
+    for i = 1:cas.t
+        inds = find(mm(:,1)>P(:,i));
+        mmk(inds,1) = i;
+        mm(:,1)= min(mm(:,1),P(:,i));
+        inds = find(mm(:,2)<P(:,i));
+        mmk(inds,2) = i;
+        mm(:,2) = max(mm(:,2),P(:,i));
+    end
+    delta = mm(:,2)-mm(:,1);
+    pred = zeros(cas.m,1); 
+    ps = find(delta>0.1); 
+    pred(ps) = mmk(ps,2); 
+end
+
